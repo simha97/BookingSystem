@@ -6,37 +6,114 @@ function Calender() {
 
   useEffect(() => {
     const fetchBookedSlots = async () => {
-      const response = await fetch("api/booking");
+      const response = await fetch("api/bookedSlots");
       const data = await response.json();
       setBookedSlots(data);
-      console.log(data); 
+      console.log(data);
     };
 
     fetchBookedSlots();
   }, []);
+
+  const handleBooking = async (
+    roomId: number,
+    date: string,
+    timeSlot: string
+  ) => {
+    try {
+      const response = await fetch("api/bookedSlots", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomId, date, timeSlot }),
+      });
+
+      if (response.ok) {
+        alert("Booking successful!");
+      } else {
+        alert("Booking failed.");
+      }
+    } catch (error) {
+      console.error("Error booking slot:", error);
+    }
+  };
+
   const days = [
     {
       date: "18 okt",
       slots: [
-        { name: "Steve", capacity: 6, time: "08:00-09:00", available: false },
-        { name: "Ada", capacity: 10, time: "09:00-10:00", available: false },
-        { name: "Margret", capacity: 4, time: "10:00-11:00", available: true },
+        {
+          roomID: 2,
+          name: "Steve",
+          capacity: 6,
+          time: "08:00-09:00",
+          available: false,
+        },
+        {
+          roomID: 1,
+          name: "Ada",
+          capacity: 10,
+          time: "09:00-10:00",
+          available: false,
+        },
+        {
+          roomID: 3,
+          name: "Grace",
+          capacity: 4,
+          time: "10:00-11:00",
+          available: true,
+        },
       ],
     },
     {
       date: "19 okt",
       slots: [
-        { name: "Margret", capacity: 4, time: "08:00-09:00", available: true },
-        { name: "Steve", capacity: 6, time: "10:00-11:00", available: false },
-        { name: "Ada", capacity: 10, time: "13:00-14:00", available: true },
+        {
+          roomID: 3,
+          name: "Grace",
+          capacity: 4,
+          time: "08:00-09:00",
+          available: true,
+        },
+        {
+          roomID: 2,
+          name: "Steve",
+          capacity: 6,
+          time: "10:00-11:00",
+          available: false,
+        },
+        {
+          roomID: 1,
+          name: "Ada",
+          capacity: 10,
+          time: "13:00-14:00",
+          available: true,
+        },
       ],
     },
     {
       date: "20 okt",
       slots: [
-        { name: "Ada", capacity: 10, time: "08:00-09:00", available: true },
-        { name: "Edmund", capacity: 10, time: "09:00-10:00", available: false },
-        { name: "Grace", capacity: 20, time: "16:00-17:00", available: true },
+        {
+          roomID: 1,
+          name: "Ada",
+          capacity: 10,
+          time: "08:00-09:00",
+          available: true,
+        },
+        {
+          roomID: 2,
+          name: "Steve",
+          capacity: 10,
+          time: "09:00-10:00",
+          available: false,
+        },
+        {
+          roomID: 3,
+          name: "Grace",
+          capacity: 20,
+          time: "16:00-17:00",
+          available: true,
+        },
       ],
     },
   ];
@@ -49,7 +126,13 @@ function Calender() {
             <h3>{day.date}</h3>
             {day.slots.map((slot, slotIndex) =>
               slot.available ? (
-                <div key={slotIndex}>
+                <div
+                  key={slotIndex}
+                  onClick={() =>
+                    handleBooking(slot.roomID, day.date, slot.time)
+                  }
+                  style={{ cursor: "pointer", color: "blue" }}
+                >
                   <div>
                     {slot.name} ({slot.capacity})
                   </div>

@@ -13,3 +13,15 @@ export async function GET() {
 
   return NextResponse.json(bookedSlots);
 }
+export async function POST(request: Request) {
+  const db = new Database("db/database.db");
+  const { roomId, date, timeSlot } = await request.json();
+
+  const sql = `
+    INSERT INTO bookings (roomId, date, timeSlot)
+    VALUES (?, ?, ?)
+  `;
+  db.prepare(sql).run(roomId, date, timeSlot);
+
+  return NextResponse.json({ success: true, message: "Booking successful!" });
+}
