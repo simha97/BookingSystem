@@ -9,7 +9,7 @@ function Calender() {
       const response = await fetch("api/booking");
       const data = await response.json();
       setBookedSlots(data);
-      console.log(data); // This should now log the data from the API
+      console.log(data); 
     };
 
     fetchBookedSlots();
