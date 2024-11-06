@@ -47,10 +47,12 @@ const addBooking = (roomId, date, timeSlot) => {
 createRoomsTable();
 createBookingsTable();
 
-addRoom("Ada", 22);
-addRoom("Steve", 15);
-addRoom("Grace", 10);
+addRoom("Margret", 4);
+addRoom("Steve", 6);
+addRoom("Ada", 10);
+addRoom("Edmund", 10);
+addRoom("Grace", 20);
 
-addBooking(1, "2024-10-18", "08:00-09:00");
-addBooking(2, "2024-10-18", "09:00-10:00");
-addBooking(3, "2024-10-18", "10:00-11:00");
+addBooking(1, "18 okt", "08:00-09:00");
+addBooking(2, "19 okt", "09:00-10:00");
+addBooking(3, "19 okt", "10:00-11:00");
