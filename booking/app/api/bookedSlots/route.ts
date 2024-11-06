@@ -5,7 +5,7 @@ export async function GET() {
   const db = new Database("db/database.db");
 
   const sql = `
-      SELECT rooms.roomName, rooms.capacity, bookings.date, bookings.timeSlot
+      SELECT rooms.roomId, rooms.roomName, rooms.capacity, bookings.date, bookings.timeSlot
       FROM bookings
       JOIN rooms ON bookings.roomId = rooms.roomId
     `;
