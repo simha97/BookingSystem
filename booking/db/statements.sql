@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Rooms (
             )
 
 INSERT INTO Rooms (room_name, capacity) 
-VALUES ("Ada", 10)
+VALUES ("Grace", 20)
 
 
-DROP TABLE Rooms
+DROP TABLE bookings

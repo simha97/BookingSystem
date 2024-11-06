@@ -3,23 +3,30 @@ import React, { useState } from "react";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-const names = [
-  "Margret (4 personer)",
-  "Steve (6 personer)",
-  "Ada (10 personer)",
-  "Edmund (10 personer)",
-  "Grace (20 personer)",
-];
+type Room = {
+  roomID: number;
+  roomName: string;
+  capacity: number;
+};
 
-export default function MultipleSelectCheckmarks() {
-  const [roomsSelected, setRoomsSelected] = useState<string[]>([]);
+interface CheckboxProps {
+  rooms: Room[];
+  roomsSelected: string[];
+  setRoomsSelected: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export default function Checkbox({
+  rooms,
+  roomsSelected,
+  setRoomsSelected,
+}: CheckboxProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleChange = (name: string) => {
+  const handleChange = (roomName: string) => {
     setRoomsSelected((prev) =>
-      prev.includes(name)
-        ? prev.filter((item) => item !== name)
-        : [...prev, name]
+      prev.includes(roomName)
+        ? prev.filter((item) => item !== roomName)
+        : [...prev, roomName]
     );
   };
 
@@ -42,19 +49,20 @@ export default function MultipleSelectCheckmarks() {
           className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg"
           style={{ maxHeight: ITEM_HEIGHT * 5.5 + ITEM_PADDING_TOP }}
         >
-          {names.map((name) => (
+          {rooms.map((room) => (
             <div
-              key={name}
+              key={room.roomID}
               className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
-              onClick={() => handleChange(name)}
+              onClick={() => handleChange(room.roomName)}
             >
-              <span>{name}</span>
-
+              <span>
+                {room.roomName} ({room.capacity} personer)
+              </span>
               <input
                 type="checkbox"
-                checked={roomsSelected.includes(name)}
+                checked={roomsSelected.includes(room.roomName)}
                 onChange={() => {}}
-                className="ml-auto custom-checkbox"
+                className="ml-auto"
               />
             </div>
           ))}
