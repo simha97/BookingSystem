@@ -4,8 +4,7 @@ CREATE TABLE IF NOT EXISTS Rooms (
             capacity INTEGER
             )
 
-INSERT INTO Rooms (room_name, capacity) 
+INSERT INTO booking (room_name, capacity) 
 VALUES ("Grace", 20)
-
 
 DROP TABLE bookings
