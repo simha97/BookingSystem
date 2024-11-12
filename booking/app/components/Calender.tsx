@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Checkbox from './Checkbox';
+import Image from 'next/image';
+import PopUp from './PopUp';
 
 type Room = {
   roomID: number;
@@ -8,71 +10,70 @@ type Room = {
   capacity: number;
 };
 
-interface Slot {
+type Slot = {
   roomId: number;
   date: string;
   timeSlot: string;
   roomName: string;
-}
+};
 
-interface CalenderProps {
+type CalenderProps = {
   rooms: Room[];
   slots: string[];
   dates: string[];
-}
+};
 
 function Calender({ rooms, slots, dates }: CalenderProps) {
   const [roomsFiltered, setRoomsFiltered] = useState<string[]>([]);
   const [bookedSlots, setBookedSlots] = useState<Slot[]>([]);
-  const [userName, setUserName] = useState<string>('');
+  const [username, setUsername] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [confirmed, setConfirmed] = useState(false);
 
+  const daysToShow = 3;
+
+  // Fetchign API
   useEffect(() => {
     const fetchBookedSlots = async () => {
       const response = await fetch('api/bookedSlots');
       const data = await response.json();
       setBookedSlots(data);
-      console.log('Booked slots fetched:', data);
     };
 
     fetchBookedSlots();
   }, []);
 
   const handleBooking = async () => {
-    if (!userName.trim()) {
+    if (!username.trim()) {
       alert('Please enter your name to book a slot.');
       return;
     }
-
-    if (!selectedSlot) {
-      alert('No slot selected.');
-      return;
-    }
-
+    // POST to API
     try {
       const response = await fetch('api/bookedSlots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          roomId: selectedSlot.roomId,
-          date: selectedSlot.date,
-          timeSlot: selectedSlot.timeSlot,
-          name: userName,
+          roomId: selectedSlot?.roomId,
+          date: selectedSlot?.date,
+          timeSlot: selectedSlot?.timeSlot,
+          name: username,
         }),
       });
 
       if (response.ok) {
-        alert('Booking successful!');
-        const updatedSlots = await fetch('api/bookedSlots').then((res) =>
-          res.json()
-        );
-        setBookedSlots(updatedSlots);
         setStep(1);
         setSelectedSlot(null);
-        setUserName('');
+        setUsername('');
+        setConfirmed(true);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
-        alert('Booking failed.');
+        console.log('Booking failed.');
       }
     } catch (error) {
       console.error('Error booking slot:', error);
@@ -88,22 +89,36 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
     );
   };
 
+  const handleNextDates = () => {
+    if (startIndex + daysToShow < dates.length) {
+      setStartIndex(startIndex + daysToShow);
+    }
+  };
+
+  const handlePrevDates = () => {
+    if (startIndex - daysToShow >= 0) {
+      setStartIndex(startIndex - daysToShow);
+    }
+  };
+
+  const visibleDates = dates.slice(startIndex, startIndex + daysToShow);
+
   return (
     <div>
+      {confirmed && <PopUp />}
       {step === 1 && (
-        <div className="text-center p-4">
-          <h1 className="text-2xl font-bold mb-6">Boka ett rum</h1>
+        <div className="p-4">
+          <h1 className="text-6xl font-bold mb-6">Boka ett rum</h1>
           <button
-            className="bg-black text-white rounded-md px-4 py-2"
+            className="bg-black text-white rounded-lg mt-6 px-4 py-2 w-full"
             onClick={() => setStep(2)}>
             Nästa
           </button>
         </div>
       )}
-
       {step === 2 && (
-        <>
-          <h1> Välj en tid </h1>
+        <div>
+          <h1 className="text-5xl font-bold mb-6"> Välj en tid </h1>
 
           <Checkbox
             rooms={rooms}
@@ -111,10 +126,38 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
             setRoomsFiltered={setRoomsFiltered}
           />
 
+          <div className="flex items-center justify-between p-4">
+            <button
+              className="bg-gray-300 px-4 py-2 rounded-l bg-transparent "
+              onClick={handlePrevDates}
+              disabled={startIndex === 0}>
+              <Image
+                src="/LeftArrow.svg"
+                alt="Left Arrow"
+                width={24}
+                height={24}
+              />
+            </button>
+            <span className="mx-4 font-bold">
+              {visibleDates[0]} - {visibleDates[visibleDates.length - 1]}
+            </span>
+            <button
+              className="bg-gray-300 px-4 py-2 rounded-r bg-transparent "
+              onClick={handleNextDates}
+              disabled={startIndex + daysToShow >= dates.length}>
+              <Image
+                src="/RightArrow.svg"
+                alt="Right Arrow"
+                width={24}
+                height={24}
+              />
+            </button>
+          </div>
+
           <div className="grid grid-cols-3">
-            {dates.map((date, dateIndex) => (
-              <div key={dateIndex} className="border p-3">
-                <h3>{date}</h3>
+            {visibleDates.map((date, dateIndex) => (
+              <div key={dateIndex} className="border">
+                <h3 className="text-center border-b py-1">{date}</h3>
                 {rooms
                   .filter(
                     (room) =>
@@ -131,7 +174,7 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
                         .map((timeSlot, slotIndex) => (
                           <div
                             key={slotIndex}
-                            className={`border p-2 rounded-lg text-center m-3 cursor-pointer ${
+                            className={`border p-2 text-center rounded-md m-2 cursor-pointer transition-all duration-200 min-w-[80px] ${
                               selectedSlot &&
                               selectedSlot.roomId === room.roomID &&
                               selectedSlot.date === date &&
@@ -147,10 +190,12 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
                                 roomName: room.roomName,
                               })
                             }>
-                            <h4 style={{ fontWeight: 'bold' }}>
+                            <h4 className="font-bold text-xs sm:text-sm md:text-base lg:text-lg">
                               {room.roomName} ({room.capacity})
                             </h4>
-                            <div>{timeSlot}</div>
+                            <div className="text-xs sm:text-sm md:text-base">
+                              {timeSlot}
+                            </div>
                           </div>
                         ))}
                     </div>
@@ -160,36 +205,42 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
           </div>
 
           <button
-            className="bg-black text-white rounded-md px-4 py-2 mt-4"
-            disabled={!selectedSlot}
-            onClick={() => setStep(3)}>
+            className="bg-black text-white rounded-lg px-4 my-3 py-2 w-full"
+            onClick={() => {
+              if (!selectedSlot) {
+                alert('Välj en tid innan du går vidare');
+                return;
+              }
+              setStep(3);
+            }}>
             Nästa
           </button>
-        </>
+        </div>
       )}
-
       {step === 3 && (
-        <>
+        <div>
           <div className="mb-4">
-            <label htmlFor="userName" className="block text-lg font-bold mb-2">
+            <h1 className="text-6xl font-bold mb-6">Vem bokar?</h1>
+
+            <label htmlFor="username" className="block text-lg font-bold mb-2">
               Förnamn och efternamn
             </label>
             <input
-              id="userName"
+              id="username"
               type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder="Skriv ditt fullständiga namn här"
               className="p-2 border border-gray-400 rounded-lg w-full"
             />
           </div>
 
           <button
-            className="bg-black text-white rounded-md px-4 py-2"
+            className="bg-black text-white rounded-lg px-4 my-3 py-2 w-full"
             onClick={handleBooking}>
             Boka
           </button>
-        </>
+        </div>
       )}
     </div>
   );

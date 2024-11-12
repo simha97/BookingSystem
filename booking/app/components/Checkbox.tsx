@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+import Image from 'next/image';
 
 type Room = {
   roomID: number;
@@ -9,11 +7,11 @@ type Room = {
   capacity: number;
 };
 
-interface CheckboxProps {
+type CheckboxProps = {
   rooms: Room[];
   roomsFiltered: string[];
   setRoomsFiltered: React.Dispatch<React.SetStateAction<string[]>>;
-}
+};
 
 export default function Checkbox({
   rooms,
@@ -31,22 +29,27 @@ export default function Checkbox({
   };
 
   const handleUnmarkAll = () => {
-    setRoomsFiltered([]); // Clear all selected items
+    setRoomsFiltered([]);
   };
 
   return (
-    <div className="relative m-4 w-72">
+    <div className="relative m-4 w-72 ">
       <button
-        className="border border-gray-300 px-3 py-2 rounded-md w-full text-left"
+        className="border border-gray-300 px-3 py-2 rounded-md flex items-center justify-between w-[170px]"
         onClick={() => setIsDropdownOpen((prev) => !prev)}>
         {roomsFiltered.length > 0
           ? `${roomsFiltered.length} valda rum`
           : 'Mötesrum'}
+        <Image
+          src="/ArrowDown.svg"
+          alt="Arrow Down"
+          width={24}
+          height={24}
+          className="ml-2"
+        />
       </button>
       {isDropdownOpen && (
-        <div
-          className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg"
-          style={{ maxHeight: ITEM_HEIGHT * 5.5 + ITEM_PADDING_TOP }}>
+        <div className="absolute z-10 mt-1 max-h-80 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg">
           {rooms.map((room) => (
             <div
               key={room.roomID}
@@ -63,14 +66,14 @@ export default function Checkbox({
               />
             </div>
           ))}
-          <div className="flex justify-between px-4 py-3">
+          <div className="flex justify-between px-4 py-3 gap-4">
             <button
-              className="bg-black text-white rounded-md px-4 py-2"
+              className="bg-black text-white rounded-md px-4 py-2 w-full"
               onClick={() => setIsDropdownOpen(false)}>
               Välj
             </button>
             <button
-              className="bg-black text-white rounded-md px-4 py-2"
+              className="bg-gray-600 text-white rounded-md px-4 py-2 w-full"
               onClick={handleUnmarkAll}>
               Avmarkera
             </button>

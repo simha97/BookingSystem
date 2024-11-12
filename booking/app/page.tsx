@@ -3,11 +3,11 @@
 import Calender from './components/Calender';
 
 export default function Home() {
-  interface Room {
+  type Room = {
     roomID: number;
     roomName: string;
     capacity: number;
-  }
+  };
 
   const rooms: Room[] = [
     { roomID: 1, roomName: 'Margret', capacity: 4 },
@@ -27,7 +27,15 @@ export default function Home() {
     '14:00-15:00',
     '15:00-16:00',
   ];
-  const dates: string[] = ['18 okt', '19 okt', '20 okt'];
+  const dates: string[] = [
+    '18 okt',
+    '19 okt',
+    '20 okt',
+    '21 okt',
+    '22 okt',
+    '23 okt',
+    '24 okt',
+  ];
 
   return (
     <div>

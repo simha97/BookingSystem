@@ -24,7 +24,6 @@ export async function POST(request: Request) {
   const db = new Database('db/database.db');
   const { roomId, date, timeSlot, name } = await request.json();
 
-  // Validate input
   if (!name || typeof name !== 'string' || name.trim() === '') {
     return NextResponse.json(
       {
