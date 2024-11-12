@@ -17,16 +17,7 @@ export default function Home() {
     { roomID: 5, roomName: 'Grace', capacity: 20 },
   ];
 
-  const slots: string[] = [
-    '08:00-09:00',
-    '09:00-10:00',
-    '10:00-11:00',
-    '11:00-12:00',
-    '12:00-13:00',
-    '13:00-14:00',
-    '14:00-15:00',
-    '15:00-16:00',
-  ];
+  const slots: string[] = ['10:00-11:00', '11:00-12:00', '13:00-14:00'];
   const dates: string[] = [
     '18 okt',
     '19 okt',

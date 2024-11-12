@@ -110,8 +110,9 @@ function BookingPage({ rooms, slots, dates }: CalenderProps) {
     <div>
       {confirmed && <PopUp />}
       {step === 1 && (
-        <div className="p-4">
+        <div className="flex flex-col h-screen p-4">
           <h1 className="text-6xl font-bold mb-6">Boka ett rum</h1>
+          <div className="flex-grow"></div>{' '}
           <button
             className="bg-black text-white rounded-lg mt-6 px-4 py-2 w-full"
             onClick={() => setStep(2)}>
@@ -222,10 +223,9 @@ function BookingPage({ rooms, slots, dates }: CalenderProps) {
         </div>
       )}
       {step === 3 && (
-        <div>
-          <div className="mb-4">
+        <div className="flex flex-col h-screen p-4">
+          <div className="flex-grow mb-4">
             <h1 className="text-6xl font-bold mb-6">Vem bokar?</h1>
-
             <label htmlFor="username" className="block text-lg font-bold mb-2">
               Förnamn och efternamn
             </label>
@@ -238,9 +238,8 @@ function BookingPage({ rooms, slots, dates }: CalenderProps) {
               className="p-2 border border-gray-400 rounded-lg w-full"
             />
           </div>
-
           <button
-            className="bg-black text-white rounded-lg px-4 my-3 py-2 w-full"
+            className="bg-black text-white rounded-lg px-4 py-2 w-full"
             onClick={handleBooking}>
             Boka
           </button>
