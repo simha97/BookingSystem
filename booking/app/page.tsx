@@ -1,6 +1,6 @@
 'use client';
 
-import Calender from './components/Calender';
+import BookingPage from './components/BookingPage';
 
 export default function Home() {
   type Room = {
@@ -39,7 +39,7 @@ export default function Home() {
 
   return (
     <div>
-      <Calender rooms={rooms} slots={slots} dates={dates} />
+      <BookingPage rooms={rooms} slots={slots} dates={dates} />
     </div>
   );
 }

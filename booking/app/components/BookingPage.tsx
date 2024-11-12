@@ -23,7 +23,7 @@ type CalenderProps = {
   dates: string[];
 };
 
-function Calender({ rooms, slots, dates }: CalenderProps) {
+function BookingPage({ rooms, slots, dates }: CalenderProps) {
   const [roomsFiltered, setRoomsFiltered] = useState<string[]>([]);
   const [bookedSlots, setBookedSlots] = useState<Slot[]>([]);
   const [username, setUsername] = useState('');
@@ -69,6 +69,7 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
         setUsername('');
         setConfirmed(true);
 
+        //Update the page
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -80,6 +81,7 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
     }
   };
 
+  //checking if slot is booked
   const isSlotBooked = (roomId: number, date: string, timeSlot: string) => {
     return bookedSlots.some(
       (slot: { roomId: number; date: string; timeSlot: string }) =>
@@ -89,6 +91,7 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
     );
   };
 
+  // for changing the dates
   const handleNextDates = () => {
     if (startIndex + daysToShow < dates.length) {
       setStartIndex(startIndex + daysToShow);
@@ -120,6 +123,7 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
         <div>
           <h1 className="text-5xl font-bold mb-6"> Välj en tid </h1>
 
+          {/*updating rooms rendered from the checkbox*/}
           <Checkbox
             rooms={rooms}
             roomsFiltered={roomsFiltered}
@@ -246,4 +250,4 @@ function Calender({ rooms, slots, dates }: CalenderProps) {
   );
 }
 
-export default Calender;
+export default BookingPage;
