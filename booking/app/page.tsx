@@ -1,7 +1,6 @@
 'use client';
 
 import Calender from './components/Calender';
-import { useState } from 'react';
 
 export default function Home() {
   interface Room {
@@ -18,15 +17,21 @@ export default function Home() {
     { roomID: 5, roomName: 'Grace', capacity: 20 },
   ];
 
-  const [roomsFiltered, setRoomsFiltered] = useState<string[]>([]);
+  const slots: string[] = [
+    '08:00-09:00',
+    '09:00-10:00',
+    '10:00-11:00',
+    '11:00-12:00',
+    '12:00-13:00',
+    '13:00-14:00',
+    '14:00-15:00',
+    '15:00-16:00',
+  ];
+  const dates: string[] = ['18 okt', '19 okt', '20 okt'];
 
   return (
     <div>
-      <Calender
-        rooms={rooms}
-        roomsFiltered={roomsFiltered}
-        setRoomsFiltered={setRoomsFiltered}
-      />
+      <Calender rooms={rooms} slots={slots} dates={dates} />
     </div>
   );
 }

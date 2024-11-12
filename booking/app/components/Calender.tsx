@@ -8,40 +8,32 @@ type Room = {
   capacity: number;
 };
 
-interface CalenderProps {
-  rooms: Room[];
-  roomsFiltered: string[];
-  setRoomsFiltered: React.Dispatch<React.SetStateAction<string[]>>;
+interface Slot {
+  roomId: number;
+  date: string;
+  timeSlot: string;
+  roomName: string;
 }
 
-function Calender({ rooms, roomsFiltered, setRoomsFiltered }: CalenderProps) {
-  const [bookedSlots, setBookedSlots] = useState([]);
-  const [userName, setUserName] = useState('');
-  const [selectedSlot, setSelectedSlot] = useState<{
-    roomId: number;
-    date: string;
-    timeSlot: string;
-    roomName: string;
-  } | null>(null);
-  const [step, setStep] = useState(1);
+interface CalenderProps {
+  rooms: Room[];
+  slots: string[];
+  dates: string[];
+}
 
-  const slots: string[] = [
-    '08:00-09:00',
-    '09:00-10:00',
-    '10:00-11:00',
-    '11:00-12:00',
-    '12:00-13:00',
-    '13:00-14:00',
-    '14:00-15:00',
-    '15:00-16:00',
-  ];
-  const dates: string[] = ['18 okt', '19 okt', '20 okt'];
+function Calender({ rooms, slots, dates }: CalenderProps) {
+  const [roomsFiltered, setRoomsFiltered] = useState<string[]>([]);
+  const [bookedSlots, setBookedSlots] = useState<Slot[]>([]);
+  const [userName, setUserName] = useState<string>('');
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [step, setStep] = useState<number>(1);
 
   useEffect(() => {
     const fetchBookedSlots = async () => {
       const response = await fetch('api/bookedSlots');
       const data = await response.json();
       setBookedSlots(data);
+      console.log('Booked slots fetched:', data);
     };
 
     fetchBookedSlots();
